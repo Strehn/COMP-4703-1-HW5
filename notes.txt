@@ -1,0 +1,18 @@
+Your Tasks:
+
+- TODO: Parameterize sample size via CLI and compute accuracy across that sample and include in your submission notes.txt file
+
+
+- TODO: Save a few annotated outputs and include in your submission notes.txt file
+
+- TODO: Log and analyze failure cases (e.g., wrong number of letters, no contours) and include in your submission notes.txt file
+
+- TODO: Parameterize hyperparameters via CLI (epochs, batch size) and justify choices and include in your submission notes.txt file
+
+- TODO: Experiment with regularization (e.g., Dropout) and report effects on overfitting and include in your submission notes.txt file
+
+- TODO: Save training/validation curves (accuracy/loss) and include in your submission notes.txt file
+
+- TODO (optional): Try data augmentation and compare results.
+
+
