@@ -32,3 +32,12 @@ This will write out "captcha_model.hdf5" and "model_labels.dat"
 Run: 
 
 python3 solve_captchas_with_model.py
+
+Your Tasks:
+- TODO: Parameterize sample size via CLI and compute accuracy across that sample.
+- TODO: Save a few annotated outputs and include them in your submission.
+- TODO: Log and analyze failure cases (e.g., wrong number of letters, no contours).
+- TODO: Parameterize hyperparameters via CLI (epochs, batch size) and justify choices.
+- TODO: Experiment with regularization (e.g., Dropout) and report effects on overfitting.
+- TODO: Save training/validation curves (accuracy/loss) and include in your write-up.
+- TODO (optional): Try data augmentation and compare results.
