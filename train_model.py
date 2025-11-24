@@ -1,3 +1,16 @@
+"""
+Homework Part 2: Train a CNN to Recognize CAPTCHA Letters
+
+Goal: Build, train, and evaluate a convolutional neural network on extracted letter images.
+
+Tasks:
+- TODO: Parameterize hyperparameters via CLI (epochs, batch size) and justify choices.
+- TODO: Experiment with regularization (e.g., Dropout) and report effects on overfitting.
+- TODO: Save training/validation curves (accuracy/loss) and include in your write-up.
+- TODO (optional): Try data augmentation and compare results.
+"""
+
+import argparse
 import cv2
 import pickle
 import os.path
@@ -5,9 +18,8 @@ import numpy as np
 from imutils import paths
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.model_selection import train_test_split
-from keras.models import Sequential
-from keras.layers.convolutional import Conv2D, MaxPooling2D
-from keras.layers.core import Flatten, Dense
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 from helpers import resize_to_fit
 
 
@@ -15,6 +27,11 @@ LETTER_IMAGES_FOLDER = "extracted_letter_images"
 MODEL_FILENAME = "captcha_model.hdf5"
 MODEL_LABELS_FILENAME = "model_labels.dat"
 
+# Argument parsing for hyperparameters
+parser = argparse.ArgumentParser(description="Train CAPTCHA letter recognition model")
+parser.add_argument("--epochs", type=int, default=10, help="Number of training epochs")
+parser.add_argument("--batch-size", type=int, default=32, help="Batch size")
+args = parser.parse_args()
 
 # initialize the data and labels
 data = []
@@ -44,6 +61,8 @@ for image_file in paths.list_images(LETTER_IMAGES_FOLDER):
 data = np.array(data, dtype="float") / 255.0
 labels = np.array(labels)
 
+# TODO (optional): try standardization or augmentation here and compare.
+
 # Split the training data into separate train and test sets
 (X_train, X_test, Y_train, Y_test) = train_test_split(data, labels, test_size=0.25, random_state=0)
 
@@ -62,24 +81,32 @@ model = Sequential()
 
 # First convolutional layer with max pooling
 model.add(Conv2D(20, (5, 5), padding="same", input_shape=(20, 20, 1), activation="relu"))
-model.add() #edit this
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
 # Second convolutional layer with max pooling
-model.add() #edit this
-model.add() #edit this
+model.add(Conv2D(50, (5, 5), padding="same", activation="relu"))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
 
 # Hidden layer with 500 nodes
-model.add() #edit this
-model.add() #edit this
+model.add(Flatten())
+model.add(Dense(500, activation="relu"))
 
 # Output layer with 32 nodes (one for each possible letter/number we predict)
-model.add() #edit this
+model.add(Dense(32, activation="softmax"))
+
+# TODO: Consider adding Dropout to reduce overfitting.
 
 # Ask Keras to build the TensorFlow model behind the scenes
 model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
 
 # Train the neural network
-model.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size=32, epochs=10, verbose=1)
+history = model.fit(X_train, Y_train, validation_data=(X_test, Y_test), batch_size=args.batch_size, epochs=args.epochs, verbose=1)
+
+# Report final training metrics
+final_train_acc = history.history.get("accuracy", [None])[-1]
+final_val_acc = history.history.get("val_accuracy", [None])[-1]
+print(f"[REPORT] Final training accuracy: {final_train_acc}")
+print(f"[REPORT] Final validation accuracy: {final_val_acc}")
 
 # Save the trained model to disk
 model.save(MODEL_FILENAME)
